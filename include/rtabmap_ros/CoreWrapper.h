@@ -80,6 +80,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <octomap_msgs/srv/get_octomap.hpp>
 #endif
 
+#define WITH_APRILTAG_MSGS
 #ifdef WITH_APRILTAG_MSGS
 #include <apriltag_msgs/msg/april_tag_detection_array.hpp>
 #endif
