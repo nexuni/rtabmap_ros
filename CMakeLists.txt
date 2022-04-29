@@ -51,7 +51,7 @@ find_package(image_geometry REQUIRED)
 # Optional components
 #find_package(costmap_2d)
 find_package(octomap_msgs)
-#find_package(apriltag_msgs)
+find_package(apriltag_msgs)
 #find_package(find_object_2d)
 #find_package(fiducial_msgs)
 
@@ -299,17 +299,17 @@ ADD_DEFINITIONS("-DWITH_OCTOMAP_MSGS")
 ENDIF(octomap_msgs_FOUND)
 
 # If apriltag_msgs is found, add definition
-#IF(apriltag_msgs_FOUND)
-#MESSAGE(STATUS "WITH apriltag_msgs")
-#include_directories(
-#  ${apriltag_msgs_INCLUDE_DIRS}
-#)
-#SET(Libraries
-#  apriltag_msgs
-#  ${Libraries}
-#)
-#ADD_DEFINITIONS("-DWITH_APRILTAG_MSGS")
-#ENDIF(apriltag_msgs_FOUND)
+IF(apriltag_msgs_FOUND)
+MESSAGE(STATUS "WITH apriltag_msgs")
+include_directories(
+  ${apriltag_msgs_INCLUDE_DIRS}
+)
+SET(Libraries
+  apriltag_msgs
+  ${Libraries}
+)
+ADD_DEFINITIONS("-DWITH_APRILTAG_MSGS")
+ENDIF(apriltag_msgs_FOUND)
 
 # If fiducial_msgs is found, add definition
 IF(fiducial_msgs_FOUND)
