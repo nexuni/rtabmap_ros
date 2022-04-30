@@ -2423,18 +2423,18 @@ void CoreWrapper::tagDetectionsAsyncCallback(const apriltag_msgs::msg::AprilTagD
 					warned = true;
 				}
 			}
-			if(tagDetections->detections[i].pose.header.stamp.seconds() != 0.0)
+			if(tagDetections->detections[i].pose.header.stamp.sec != 0.0)
 			{
 				p.header.stamp = tagDetections->detections[i].pose.header.stamp;
 
 				static bool warned = false;
 				if(!warned &&
-					tagDetections->header.stamp.seconds() != 0.0 &&
+					tagDetections->header.stamp.sec != 0.0 &&
 					tagDetections->detections[i].pose.header.stamp != tagDetections->header.stamp)
 				{
 					RCLCPP_WARN(get_logger(), "stamp set for individual tag detections (%f) doesn't match the stamp of the message (%f), "
 							"the resulting pose of the tag may be wrongly interpolated. This message is only printed once.",
-							tagDetections->detections[i].pose.header.stamp.seconds(), tagDetections->header.stamp.seconds());
+							tagDetections->detections[i].pose.header.stamp.sec, tagDetections->header.stamp.sec);
 					warned = true;
 				}
 			}
@@ -2445,7 +2445,6 @@ void CoreWrapper::tagDetectionsAsyncCallback(const apriltag_msgs::msg::AprilTagD
 		
 	}
 }
-
 #endif
 
 #ifdef WITH_FIDUCIAL_MSGS
