@@ -2399,7 +2399,7 @@ void CoreWrapper::gpsFixAsyncCallback(const sensor_msgs::msg::NavSatFix::SharedP
 }
 
 #ifdef WITH_APRILTAG_MSGS
-void CoreWrapper::tagDetectionsAsyncCallback(const apriltag_ros::AprilTagDetectionArray & tagDetections)
+void CoreWrapper::tagDetectionsAsyncCallback(const apriltag_msgs::msg::AprilTagDetectionArray & tagDetections)
 {
 	if(!paused_)
 	{
