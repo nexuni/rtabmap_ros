@@ -793,7 +793,7 @@ CoreWrapper::CoreWrapper(const rclcpp::NodeOptions & options) :
 	globalPoseAsyncSub_ = this->create_subscription<geometry_msgs::msg::PoseWithCovarianceStamped>("global_pose", 5, std::bind(&CoreWrapper::globalPoseAsyncCallback, this, std::placeholders::_1));
 	gpsFixAsyncSub_ = this->create_subscription<sensor_msgs::msg::NavSatFix>("gps/fix", rclcpp::QoS(5).reliability((rmw_qos_reliability_policy_t)qosGPS), std::bind(&CoreWrapper::gpsFixAsyncCallback, this, std::placeholders::_1));
 #ifdef WITH_APRILTAG_MSGS
-	tagDetectionsSub_ = this->create_subscription<apriltag_ros::msg::AprilTagDetectionArray>("tag_detections", 5, std::bind(&CoreWrapper::tagDetectionsAsyncCallback, this, std::placeholders::_1));
+	tagDetectionsSub_ = this->create_subscription<apriltag_msgs::msg::AprilTagDetectionArray>("tag_detections", 5, std::bind(&CoreWrapper::tagDetectionsAsyncCallback, this, std::placeholders::_1));
 #endif
 #ifdef WITH_FIDUCIAL_MSGS
 	fiducialTransfromsSub_ = this->create_subscription<fiducial_msgs::msg::FiducialTransformArray>("fiducial_transforms", 5, std::bind(&CoreWrapper::fiducialDetectionsAsyncCallback, this, std::placeholders::_1));
@@ -2445,6 +2445,7 @@ void CoreWrapper::tagDetectionsAsyncCallback(const apriltag_msgs::msg::AprilTagD
 		
 	}
 }
+
 #endif
 
 #ifdef WITH_FIDUCIAL_MSGS
