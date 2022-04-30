@@ -2399,50 +2399,47 @@ void CoreWrapper::gpsFixAsyncCallback(const sensor_msgs::msg::NavSatFix::SharedP
 }
 
 #ifdef WITH_APRILTAG_MSGS
-void CoreWrapper::tagDetectionsAsyncCallback(const apriltag_msgs::msg::AprilTagDetectionArray::SharedPtr tagDetections)
+void CoreWrapper::tagDetectionsAsyncCallback(const apriltag_ros::AprilTagDetectionArray & tagDetections)
 {
 	if(!paused_)
 	{
-		for(unsigned int i=0; i<tagDetections->detections.size(); ++i)
+		for(unsigned int i=0; i<tagDetections.detections.size(); ++i)
 		{
-			if(tagDetections->detections[i].id.size() >= 1)
+			geometry_msgs::PoseWithCovarianceStamped p = tagDetections.detections[i].pose;
+			p.header = tagDetections.header;
+			if(!tagDetections.detections[i].pose.header.frame_id.empty())
 			{
-				geometry_msgs::msg::PoseWithCovarianceStamped p = tagDetections->detections[i].pose;
-				p.header = tagDetections->header;
-				if(!tagDetections->detections[i].pose.header.frame_id.empty())
-				{
-					p.header.frame_id = tagDetections->detections[i].pose.header.frame_id;
+				p.header.frame_id = tagDetections.detections[i].pose.header.frame_id;
 
-					static bool warned = false;
-					if(!warned &&
-						!tagDetections->header.frame_id.empty() &&
-						tagDetections->detections[i].pose.header.frame_id.compare(tagDetections->header.frame_id)!=0)
-					{
-						RCLCPP_WARN(get_logger(), "frame_id set for individual tag detections (%s) doesn't match the frame_id of the message (%s), "
-								"the resulting pose of the tag may be wrong. This message is only printed once.",
-								tagDetections->detections[i].pose.header.frame_id.c_str(), tagDetections->header.frame_id.c_str());
-						warned = true;
-					}
-				}
-				if(!tagDetections->detections[i].pose.header.stamp.isZero())
+				static bool warned = false;
+				if(!warned &&
+					!tagDetections.header.frame_id.empty() &&
+					tagDetections.detections[i].pose.header.frame_id.compare(tagDetections.header.frame_id)!=0)
 				{
-					p.header.stamp = tagDetections->detections[i].pose.header.stamp;
-
-					static bool warned = false;
-					if(!warned &&
-						!tagDetections->header.stamp.isZero() &&
-						tagDetections->detections[i].pose.header.stamp != tagDetections->header.stamp)
-					{
-						RCLCPP_WARN(get_logger(), "stamp set for individual tag detections (%f) doesn't match the stamp of the message (%f), "
-								"the resulting pose of the tag may be wrongly interpolated. This message is only printed once.",
-								tagDetections->detections[i].pose.header.stamp.toSec(), tagDetections->header.stamp.toSec());
-						warned = true;
-					}
+					NODELET_WARN("frame_id set for individual tag detections (%s) doesn't match the frame_id of the message (%s), "
+							"the resulting pose of the tag may be wrong. This message is only printed once.",
+							tagDetections.detections[i].pose.header.frame_id.c_str(), tagDetections.header.frame_id.c_str());
+					warned = true;
 				}
-				uInsert(tags_,
-						std::make_pair(tagDetections->detections[i].id[0],
-								std::make_pair(p, tagDetections->detections[i].size.size()==1?(float)tagDetections->detections[i].size[0]:0.0f)));
 			}
+			if(tagDetections.detections[i].pose.header.stamp.seconds() != 0.0)
+			{
+				p.header.stamp = tagDetections.detections[i].pose.header.stamp;
+
+				static bool warned = false;
+				if(!warned &&
+					tagDetections.header.stamp.seconds() != 0.0 &&
+					tagDetections.detections[i].pose.header.stamp != tagDetections.header.stamp)
+				{
+					NODELET_WARN("stamp set for individual tag detections (%f) doesn't match the stamp of the message (%f), "
+							"the resulting pose of the tag may be wrongly interpolated. This message is only printed once.",
+							tagDetections.detections[i].pose.header.stamp.seconds(), tagDetections.header.stamp.seconds());
+					warned = true;
+				}
+			}
+			uInsert(tags_,
+					std::make_pair(tagDetections.detections[i].id,
+							std::make_pair(p, 0.0f)));
 		}
 	}
 }
