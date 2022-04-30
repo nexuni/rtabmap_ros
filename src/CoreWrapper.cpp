@@ -2439,7 +2439,7 @@ void CoreWrapper::tagDetectionsAsyncCallback(const apriltag_msgs::msg::AprilTagD
 				}
 			}
 			uInsert(tags_,
-				std::make_pair(tagDetections.detections[i].id,
+				std::make_pair(tagDetections->detections[i].id,
 						std::make_pair(p, 0.0f)));			
 		}
 		
